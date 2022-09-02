@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Card from '../../../components/card';
+import Head from 'next/head';
 import { IJob } from '../../../types/job';
 import style from '../../../styles/Jobs.module.scss'
 
@@ -45,27 +46,34 @@ const Jobs: React.FC<Props> = ({allJobs}) => {
     
     
     return (
-        <div className={style.container}>
-            <div className={style['filters-container']}>
-                <h2>Filters</h2>
-                <div className={style.buttons}>
-                    <label htmlFor="days">
-                        <input type="checkbox" id="days"  onChange={(event) => setShouldFilterJobsByDay(event.target.checked)} />
-                        <span className={style.selected}>last 7 days</span>
-                    </label>
-                    <label htmlFor="company">
-                        <input type="checkbox" id="company" onChange={(event) => setShouldFilterJobsByCompany(event.target.checked)} />
-                        <span className={style.selected}>by company</span>
-                    </label>
+        <div>
+            <Head>
+                <title>Zippia</title>
+                <meta name="description" content="Zippia frontend test." />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <div className={style.container}>
+                <div className={style['filters-container']}>
+                    <h2>Filters</h2>
+                    <div className={style.buttons}>
+                        <label htmlFor="days">
+                            <input type="checkbox" id="days"  onChange={(event) => setShouldFilterJobsByDay(event.target.checked)} />
+                            <span className={style.selected}>last 7 days</span>
+                        </label>
+                        <label htmlFor="company">
+                            <input type="checkbox" id="company" onChange={(event) => setShouldFilterJobsByCompany(event.target.checked)} />
+                            <span className={style.selected}>by company</span>
+                        </label>
+                    </div>
                 </div>
+                <main>
+                    <ul className={style.jobsList}>
+                        {filteredJobs.map((job) => {
+                            return <Card job={job} key={job.jobId}/>
+                        })}
+                    </ul>
+                </main>
             </div>
-            <main>
-                <ul className={style.jobsList}>
-                    {filteredJobs.map((job) => {
-                        return <Card job={job} key={job.jobId}/>
-                    })}
-                </ul>
-            </main>
         </div>
     );
 }
