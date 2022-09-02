@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Card from '../../../components/card';
 import { IJob } from '../../../types/job';
@@ -8,8 +8,41 @@ interface Props {
     allJobs: IJob[]
 };
 
+const filterByLastSevenDays = (jobs: IJob[]) => {
+    const currentTimeInMilliseconds = Date.now();
+    const sevenDaysInMilliseconds = 604800000;
+    return jobs.filter((job) => {
+        const jobPostingDateInMilliseconds = new Date( job.postingDate ).getTime();
+        return (currentTimeInMilliseconds - jobPostingDateInMilliseconds) < sevenDaysInMilliseconds
+    })
+}
+const filterByCompany = (jobs: IJob[]) => {
+    return jobs.sort(function(a, b){
+        if(a.companyName < b.companyName) { return -1; }
+        if(a.companyName > b.companyName) { return 1; }
+        return 0;
+    })
+}
+
 const Jobs: React.FC<Props> = ({allJobs}) => {
     const [jobs, setJobs] = useState<IJob[]>(allJobs);
+    const [filteredJobs, setFilteredJobs] = useState<IJob[]>([]);
+    const [shouldFilterJobsByDay, setShouldFilterJobsByDay] = useState(false);
+    const [shouldFilterJobsByCompany, setShouldFilterJobsByCompany] = useState(false);
+
+    useEffect(() => {
+        let filteredJobs: IJob[] = [...jobs];
+        if(shouldFilterJobsByDay){
+            const sevenDaysJobs = filterByLastSevenDays(filteredJobs);
+            filteredJobs = [...sevenDaysJobs];
+        }
+        if(shouldFilterJobsByCompany){
+            const jobsByCompany = filterByCompany(filteredJobs);
+            filteredJobs = [...jobsByCompany];
+        }
+        setFilteredJobs([...filteredJobs]);
+    }, [shouldFilterJobsByDay, shouldFilterJobsByCompany])
+    
     
     return (
         <div className={style.container}>
@@ -17,18 +50,18 @@ const Jobs: React.FC<Props> = ({allJobs}) => {
                 <h2>Filters</h2>
                 <div className={style.buttons}>
                     <label htmlFor="days">
-                        <input type="checkbox" id="days" />
+                        <input type="checkbox" id="days"  onChange={(event) => setShouldFilterJobsByDay(event.target.checked)} />
                         <span className={style.selected}>last 7 days</span>
                     </label>
                     <label htmlFor="company">
-                        <input type="checkbox" id="company" />
+                        <input type="checkbox" id="company" onChange={(event) => setShouldFilterJobsByCompany(event.target.checked)} />
                         <span className={style.selected}>by company</span>
                     </label>
                 </div>
             </div>
             <main>
                 <ul className={style.jobsList}>
-                    {jobs.map((job) => {
+                    {filteredJobs.map((job) => {
                         return <Card job={job} key={job.jobId}/>
                     })}
                 </ul>
