@@ -26,22 +26,25 @@ const filterByCompany = (jobs: IJob[]) => {
 }
 
 const Jobs: React.FC<Props> = ({allJobs}) => {
-    const [jobs, setJobs] = useState<IJob[]>(allJobs);
     const [filteredJobs, setFilteredJobs] = useState<IJob[]>([]);
     const [shouldFilterJobsByDay, setShouldFilterJobsByDay] = useState(false);
     const [shouldFilterJobsByCompany, setShouldFilterJobsByCompany] = useState(false);
 
     useEffect(() => {
-        let filteredJobs: IJob[] = [...jobs];
+        let filteredJobs: IJob[] = [...allJobs];
+
         if(shouldFilterJobsByDay){
             const sevenDaysJobs = filterByLastSevenDays(filteredJobs);
             filteredJobs = [...sevenDaysJobs];
         }
+
         if(shouldFilterJobsByCompany){
             const jobsByCompany = filterByCompany(filteredJobs);
             filteredJobs = [...jobsByCompany];
         }
+
         setFilteredJobs([...filteredJobs]);
+        
     }, [shouldFilterJobsByDay, shouldFilterJobsByCompany])
     
     
@@ -80,32 +83,39 @@ const Jobs: React.FC<Props> = ({allJobs}) => {
 
 export default Jobs;
 
-export const getStaticProps  = async () => {
-    const res = await fetch("https://www.zippia.com/api/jobs",{
-        headers: {
-            'Content-Type': 'application/json'
-          },
-        method: 'POST',
-        body: JSON.stringify({
-            "companySkills": true,
-            "dismissedListingHashes": [],
-            "fetchJobDesc": true,
-            "jobTitle": "Business Analyst",
-            "locations": [],
-            "numJobs": 20,
-            "previousListingHashes": []
-        })
-    })
+export const getStaticProps  = async () => {    
+    let jobsArray: IJob[] = [];
     
-    const { jobs } = await res.json();
-    const jobsArray = jobs.slice(10).map((job: IJob) => ({
-        jobId: job.jobId,
-        jobTitle: job.jobTitle,
-        companyName: job.companyName,
-        jobDescription: job.jobDescription,
-        postedDate: job.postedDate,
-        postingDate: job.postingDate,
-    }))
+    try {
+        const res = await fetch("https://www.zippia.com/api/jobs",{
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                "companySkills": true,
+                "dismissedListingHashes": [],
+                "fetchJobDesc": true,
+                "jobTitle": "Business Analyst",
+                "locations": [],
+                "numJobs": 20,
+                "previousListingHashes": []
+            })
+        })
+        
+        const { jobs } = await res.json();
+        jobsArray = jobs.slice(10).map((job: IJob) => ({
+            jobId: job.jobId,
+            jobTitle: job.jobTitle,
+            companyName: job.companyName,
+            jobDescription: job.jobDescription,
+            postedDate: job.postedDate,
+            postingDate: job.postingDate,
+        }))
+
+    } catch (err) {
+        console.error('Fetch error.',err);
+    }
     
     return {
         props: {
