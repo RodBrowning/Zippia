@@ -64,16 +64,16 @@ const Jobs: React.FC<Props> = ({allJobs}) => {
   return (
     <>
     <main>
-        <div className={style.jobsList}>
+        <ul className={style.jobsList}>
             {jobs.map((job) => {
-                return <div className="job" key={job.jobId}>
-                    <p>{job.jobTitle}</p>
-                    <p>{job.companyName}</p>
-                    <div>{parse(truncateString(job.jobDescription, 200, true))}</div>
-                    <p>{job.postedDate}</p>
-                </div>
+                return <li className={style.job} key={job.jobId}>
+                    <p className={style.title}>{job.jobTitle}</p>
+                    <p className={style.company}>{job.companyName}</p>
+                    <div className={style.description}>{parse(truncateString(job.jobDescription, 200, true))}</div>
+                    <p className={style.postedDate}>{job.postedDate}</p>
+                </li>
             })}
-        </div>
+        </ul>
     </main>
     </>
   );
