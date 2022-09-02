@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Card from '../../../components/card';
+import Filters from '../../../components/filters';
 import Head from 'next/head';
 import { IJob } from '../../../types/job';
 import style from '../../../styles/Jobs.module.scss'
@@ -45,30 +46,21 @@ const Jobs: React.FC<Props> = ({allJobs}) => {
 
         setFilteredJobs([...filteredJobs]);
         
-    }, [shouldFilterJobsByDay, shouldFilterJobsByCompany])
+    }, [allJobs,shouldFilterJobsByDay, shouldFilterJobsByCompany])
     
     
     return (
         <div>
             <Head>
                 <title>Zippia</title>
-                <meta name="description" content="Zippia frontend test." />
+                <meta name="description" content="Zippia front-end test." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <div className={style.container}>
-                <div className={style['filters-container']}>
-                    <h2>Filters</h2>
-                    <div className={style.buttons}>
-                        <label htmlFor="days">
-                            <input type="checkbox" id="days"  onChange={(event) => setShouldFilterJobsByDay(event.target.checked)} />
-                            <span className={style.selected}>last 7 days</span>
-                        </label>
-                        <label htmlFor="company">
-                            <input type="checkbox" id="company" onChange={(event) => setShouldFilterJobsByCompany(event.target.checked)} />
-                            <span className={style.selected}>by company</span>
-                        </label>
-                    </div>
-                </div>
+                <Filters
+                    setShouldFilterJobsByDay={setShouldFilterJobsByDay} 
+                    setShouldFilterJobsByCompany={setShouldFilterJobsByCompany}
+                />
                 <main>
                     <ul className={style.jobsList}>
                         {filteredJobs.map((job) => {
@@ -83,7 +75,7 @@ const Jobs: React.FC<Props> = ({allJobs}) => {
 
 export default Jobs;
 
-export const getStaticProps  = async () => {    
+export const getServerSideProps  = async () => {    
     let jobsArray: IJob[] = [];
     
     try {

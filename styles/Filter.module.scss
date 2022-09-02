@@ -1,0 +1,37 @@
+.filters-container {
+h2 {
+    font-weight: 400;
+}
+.buttons {
+    label {
+    input {
+        display: none;
+        &:checked ~ span{
+        color: #fff;
+        background: #3174ee;
+        }
+    }
+    span {
+        background: #fff;
+        border: 1px solid #bac4da!important;
+        color: #3174ee;
+        border-radius: 4px;
+        font-style: normal;
+        font-weight: 600;
+        letter-spacing: 0;
+        text-align: center;
+        text-transform: capitalize;
+        padding: 10px;
+        margin-left: 5px;
+        transition: all .15s;
+        cursor: pointer;
+    }
+    &:first-child {
+        span {
+        margin-left: 0;
+        }
+    }
+
+    }
+}
+}
