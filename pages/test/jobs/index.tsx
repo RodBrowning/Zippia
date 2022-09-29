@@ -96,7 +96,7 @@ export const getServerSideProps  = async () => {
         })
         
         const { jobs } = await res.json();
-        jobsArray = jobs.slice(10).map((job: IJob) => ({
+        jobsArray = jobs.slice(0, 10).map((job: IJob) => ({
             jobId: job.jobId,
             jobTitle: job.jobTitle,
             companyName: job.companyName,
