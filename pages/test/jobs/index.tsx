@@ -27,7 +27,7 @@ const filterByCompany = (jobs: IJob[]) => {
 }
 
 const Jobs: React.FC<Props> = ({allJobs}) => {
-    const [filteredJobs, setFilteredJobs] = useState<IJob[]>([]);
+    const [filteredJobs, setFilteredJobs] = useState<IJob[]>(allJobs);
     const [shouldFilterJobsByDay, setShouldFilterJobsByDay] = useState(false);
     const [shouldFilterJobsByCompany, setShouldFilterJobsByCompany] = useState(false);
 
@@ -36,17 +36,17 @@ const Jobs: React.FC<Props> = ({allJobs}) => {
 
         if(shouldFilterJobsByDay){
             const sevenDaysJobs = filterByLastSevenDays(filteredJobs);
-            filteredJobs = [...sevenDaysJobs];
+            filteredJobs = sevenDaysJobs;
         }
 
         if(shouldFilterJobsByCompany){
             const jobsByCompany = filterByCompany(filteredJobs);
-            filteredJobs = [...jobsByCompany];
+            filteredJobs = jobsByCompany;
         }
 
-        setFilteredJobs([...filteredJobs]);
+        setFilteredJobs(filteredJobs);
         
-    }, [allJobs,shouldFilterJobsByDay, shouldFilterJobsByCompany])
+    }, [allJobs, shouldFilterJobsByDay, shouldFilterJobsByCompany])
     
     
     return (
